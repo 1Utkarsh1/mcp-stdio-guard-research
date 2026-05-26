@@ -3,6 +3,7 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildEvaluationSummary } from './metrics.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const defaultResultsDir = path.join(root, 'evaluation', 'results');
@@ -135,7 +136,7 @@ export async function runEvaluation(options = {}) {
     }
   }
 
-  const summary = buildSummary(runs);
+  const summary = buildEvaluationSummary(runs, scenarios);
   const rawResults = {
     generatedAt: new Date().toISOString(),
     guardPackage,
@@ -162,34 +163,6 @@ export async function runEvaluation(options = {}) {
       runtimeOverhead: runtimeOverheadPath,
       summary: summaryPath
     }
-  };
-}
-
-export function buildSummary(runs) {
-  const expectedFailureRuns = runs.filter((run) => run.expectedFailure);
-  const expectedPassRuns = runs.filter((run) => !run.expectedFailure);
-  const falseNegatives = expectedFailureRuns.filter((run) => !run.detected);
-  const falsePositives = expectedPassRuns.filter((run) => !run.detected);
-  const durations = runs.map((run) => run.durationMs).sort((a, b) => a - b);
-
-  return {
-    totalScenarios: new Set(runs.map((run) => run.scenario)).size,
-    totalRuns: runs.length,
-    detectedFailures: expectedFailureRuns.filter((run) => run.detected).length,
-    falsePositives: falsePositives.length,
-    falseNegatives: falseNegatives.length,
-    medianRuntimeMs: percentile(durations, 0.5),
-    p95RuntimeMs: percentile(durations, 0.95),
-    injectedFaultToIssueCodes: Object.fromEntries(
-      scenarios.map((scenario) => [
-        scenario.injectedFault,
-        [...new Set(
-          runs
-            .filter((run) => run.scenario === scenario.name)
-            .flatMap((run) => run.issueCodes)
-        )].sort()
-      ])
-    )
   };
 }
 
@@ -386,12 +359,6 @@ function toSummaryMarkdown(rawResults) {
   }
 
   return `${lines.join('\n')}\n`;
-}
-
-function percentile(sortedValues, p) {
-  if (!sortedValues.length) return 0;
-  const index = Math.ceil(p * sortedValues.length) - 1;
-  return Math.round(sortedValues[Math.max(0, Math.min(index, sortedValues.length - 1))] * 1000) / 1000;
 }
 
 function csvCell(value) {

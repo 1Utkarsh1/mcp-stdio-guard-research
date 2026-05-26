@@ -2,6 +2,8 @@ import { spawnSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildEvaluationSummary } from './metrics.js';
+import { scenarios } from './run-evaluation.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sourceDir = path.join(root, 'evaluation', 'results');
@@ -20,7 +22,10 @@ for (const file of files) {
   await fs.copyFile(path.join(sourceDir, file), path.join(baselineDir, file));
 }
 
-const rawResults = JSON.parse(await fs.readFile(path.join(baselineDir, 'raw-results.json'), 'utf8'));
+const rawResultsPath = path.join(baselineDir, 'raw-results.json');
+const rawResults = JSON.parse(await fs.readFile(rawResultsPath, 'utf8'));
+rawResults.summary = buildEvaluationSummary(rawResults.runs, scenarios);
+await fs.writeFile(rawResultsPath, `${JSON.stringify(rawResults, null, 2)}\n`);
 const npmVersion = commandOutput('npm', ['-v']);
 const osDescription = commandOutput('uname', ['-a']);
 const readme = `# v1.0.0 Paper Baseline
