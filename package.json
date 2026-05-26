@@ -1,0 +1,16 @@
+{
+  "name": "mcp-stdio-guard-research",
+  "version": "0.1.0",
+  "description": "Research artifact repository for the mcp-stdio-guard paper.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "evaluate": "node evaluation/scripts/evaluate.mjs",
+    "summarize": "node evaluation/scripts/summarize.mjs",
+    "paper:check": "node evaluation/scripts/paper-check.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}
