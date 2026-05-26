@@ -39,7 +39,11 @@ MCP_STDIO_GUARD_VERSION=mcp-stdio-guard@1.0.0 npm run evaluate
 - `detection-matrix.csv`
 - `runtime-overhead.csv`
 - `summary.md`
+- `tables/per-scenario-summary.md`
+- `tables/per-profile-runtime.md`
+- `tables/failure-taxonomy.md`
 
 The files in this directory were copied from `evaluation/results/` immediately
 after the command above completed successfully. The paper tables under
-`paper/tables/` are generated from this snapshot, not from hand-written values.
+`paper/tables/` and the Markdown inspection tables under `tables/` are
+generated from this snapshot, not from hand-written values.

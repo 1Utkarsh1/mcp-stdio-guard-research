@@ -8,6 +8,7 @@
     "test": "node --test",
     "evaluate": "node evaluation/run-evaluation.js",
     "evaluate:summary": "node evaluation/summarize-results.js",
+    "artifact:summaries": "node evaluation/generate-markdown-summaries.js",
     "summarize": "node evaluation/summarize-results.js",
     "paper:baseline": "node evaluation/promote-baseline.js",
     "paper:tables": "node evaluation/generate-paper-tables.js",

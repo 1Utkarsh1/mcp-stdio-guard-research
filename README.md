@@ -36,11 +36,25 @@ artifact/
   environment.md
 ```
 
+## Research artifact
+
+The official baseline is preserved under
+`artifact/results/v1.0.0-paper-baseline/`.
+
+Evaluation methodology is documented in
+`docs/evaluation-methodology.md`, and supported claims and limitations are
+documented in `docs/claims-and-limitations.md`.
+
+Paper tables are generated from the baseline raw results. Reproduce a temporary
+evaluation run with `npm run evaluate`, then regenerate paper tables from the
+official baseline with `npm run paper:tables`.
+
 ## Scripts
 
 ```bash
 npm run evaluate
 npm run evaluate:summary
+npm run artifact:summaries
 npm run paper:baseline
 npm run paper:tables
 npm run paper:check
@@ -61,6 +75,9 @@ MCP_STDIO_GUARD_VERSION=mcp-stdio-guard@1.0.0 npm run evaluate
 
 `npm run evaluate:summary` reads `evaluation/results/raw-results.json` and
 prints an aggregate summary. It fails if no run output exists.
+
+`npm run artifact:summaries` regenerates Markdown inspection tables under the
+official baseline snapshot from `raw-results.json`.
 
 `npm run paper:baseline` promotes the current generated evaluation output into
 `artifact/results/v1.0.0-paper-baseline/` as the official reproducible snapshot.
