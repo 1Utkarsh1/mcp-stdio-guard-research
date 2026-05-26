@@ -1,0 +1,47 @@
+scenario,profile,injected_fault,expected_failure,detected,false_positive,false_negative,expected_issue_codes,detected_issue_codes,ok,summary_status,duration_ms
+clean-server,smoke,none,false,true,false,false,,,true,pass,638.493
+clean-server,registry,none,false,true,false,false,,,true,pass,411.858
+clean-server,ci,none,false,true,false,false,,,true,pass,334.351
+clean-server,strict,none,false,true,false,false,,,true,pass,730.43
+startup-stdout-pollution-server,smoke,stdout banner before initialize,true,true,false,false,stdout-non-json,stdout-non-json,false,fail,325.417
+startup-stdout-pollution-server,registry,stdout banner before initialize,true,true,false,false,stdout-non-json,stdout-non-json,false,fail,382.717
+startup-stdout-pollution-server,ci,stdout banner before initialize,true,true,false,false,stdout-non-json,static-stdout-write|stdout-non-json,false,fail,311.371
+startup-stdout-pollution-server,strict,stdout banner before initialize,true,true,false,false,stdout-non-json,static-stdout-write|stdout-non-json,false,fail,724.028
+stderr-diagnostics-server,smoke,diagnostics written to stderr only,false,true,false,false,,,true,pass,317.624
+stderr-diagnostics-server,registry,diagnostics written to stderr only,false,true,false,false,,,true,pass,394.478
+stderr-diagnostics-server,ci,diagnostics written to stderr only,false,true,false,false,,,true,pass,330.517
+stderr-diagnostics-server,strict,diagnostics written to stderr only,false,true,false,false,,,true,pass,740.971
+late-stdout-pollution-server,smoke,stdout pollution after initialize/tools-list,true,true,false,false,stdout-non-json,stdout-non-json,false,fail,342.935
+late-stdout-pollution-server,registry,stdout pollution after initialize/tools-list,true,true,false,false,stdout-non-json,stdout-non-json,false,fail,474.965
+late-stdout-pollution-server,ci,stdout pollution after initialize/tools-list,true,true,false,false,stdout-non-json,stdout-non-json,false,fail,354.84
+late-stdout-pollution-server,strict,stdout pollution after initialize/tools-list,true,true,false,false,stdout-non-json,adversarial-probe-invalid-stdout|stdout-non-json,false,fail,275.219
+malformed-json-server,smoke,malformed stdout JSON during tools/list,true,true,false,false,stdout-non-json,operation-timeout|stdout-non-json,false,fail,1849.256
+malformed-json-server,registry,malformed stdout JSON during tools/list,true,true,false,false,stdout-non-json,operation-timeout|stdout-non-json,false,fail,3367.27
+malformed-json-server,ci,malformed stdout JSON during tools/list,true,true,false,false,stdout-non-json,operation-timeout|stdout-non-json,false,fail,1872.894
+malformed-json-server,strict,malformed stdout JSON during tools/list,true,true,false,false,stdout-non-json,operation-timeout|stdout-non-json,false,fail,3334.178
+content-length-framing-server,smoke,Content-Length framing on stdout,true,true,false,false,stdout-content-length-framing,stdout-content-length-framing,false,fail,371.998
+content-length-framing-server,registry,Content-Length framing on stdout,true,true,false,false,stdout-content-length-framing,stdout-content-length-framing,false,fail,262.641
+content-length-framing-server,ci,Content-Length framing on stdout,true,true,false,false,stdout-content-length-framing,stdout-content-length-framing,false,fail,302.566
+content-length-framing-server,strict,Content-Length framing on stdout,true,true,false,false,stdout-content-length-framing,stdout-content-length-framing,false,fail,266.073
+missing-initialize-response-server,smoke,missing initialize response,true,true,false,false,initialize-timeout,initialize-timeout,false,needs_inspection,1747.038
+missing-initialize-response-server,registry,missing initialize response,true,true,false,false,initialize-timeout,initialize-timeout,false,needs_inspection,3276.875
+missing-initialize-response-server,ci,missing initialize response,true,true,false,false,initialize-timeout,initialize-timeout,false,needs_inspection,1777.865
+missing-initialize-response-server,strict,missing initialize response,true,true,false,false,initialize-timeout,initialize-timeout,false,needs_inspection,3304.44
+wrong-response-id-server,smoke,initialize response id mismatch,true,true,false,false,response-id-mismatch,response-id-mismatch,false,fail,430.238
+wrong-response-id-server,registry,initialize response id mismatch,true,true,false,false,response-id-mismatch,response-id-mismatch,false,fail,277.433
+wrong-response-id-server,ci,initialize response id mismatch,true,true,false,false,response-id-mismatch,response-id-mismatch,false,fail,295.709
+wrong-response-id-server,strict,initialize response id mismatch,true,true,false,false,response-id-mismatch,response-id-mismatch,false,fail,277.93
+crash-after-initialize-server,smoke,process crash after initialized notification,true,true,false,false,server-crashed|adversarial-probe-crash,server-crashed,false,needs_inspection,391.051
+crash-after-initialize-server,registry,process crash after initialized notification,true,true,false,false,server-crashed|adversarial-probe-crash,server-crashed,false,needs_inspection,421.939
+crash-after-initialize-server,ci,process crash after initialized notification,true,true,false,false,server-crashed|adversarial-probe-crash,server-crashed,false,needs_inspection,301.687
+crash-after-initialize-server,strict,process crash after initialized notification,true,true,false,false,server-crashed|adversarial-probe-crash,adversarial-probe-crash,false,fail,355.254
+duplicate-tool-name-server,smoke,duplicate tools/list names,true,true,false,false,tool-name-duplicate,tool-name-duplicate,false,fail,398.685
+duplicate-tool-name-server,registry,duplicate tools/list names,true,true,false,false,tool-name-duplicate,tool-name-duplicate,false,fail,387.305
+duplicate-tool-name-server,ci,duplicate tools/list names,true,true,false,false,tool-name-duplicate,tool-name-duplicate,false,fail,314.781
+duplicate-tool-name-server,strict,duplicate tools/list names,true,true,false,false,tool-name-duplicate,tool-name-duplicate,false,fail,746.978
+invalid-tool-schema-server,smoke,invalid tools/list inputSchema.required,true,true,false,false,tool-input-schema-required-missing,tool-input-schema-required-missing,false,fail,348.176
+invalid-tool-schema-server,registry,invalid tools/list inputSchema.required,true,true,false,false,tool-input-schema-required-missing,tool-input-schema-required-missing,false,fail,475.546
+invalid-tool-schema-server,ci,invalid tools/list inputSchema.required,true,true,false,false,tool-input-schema-required-missing,tool-input-schema-required-missing,false,fail,314.465
+invalid-tool-schema-server,strict,invalid tools/list inputSchema.required,true,true,false,false,tool-input-schema-required-missing,tool-input-schema-required-missing,false,fail,728.344
+capability-drift-server,registry,capability and tool-list drift across repeat runs,true,true,false,false,repeat-capability-drift|repeat-tool-drift,repeat-capability-drift|repeat-tool-drift,true,warning,424.212
+capability-drift-server,strict,capability and tool-list drift across repeat runs,true,true,false,false,repeat-capability-drift|repeat-tool-drift,repeat-capability-drift|repeat-tool-drift,true,warning,726.002

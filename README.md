@@ -41,6 +41,8 @@ artifact/
 ```bash
 npm run evaluate
 npm run evaluate:summary
+npm run paper:baseline
+npm run paper:tables
 npm run paper:check
 ```
 
@@ -59,6 +61,10 @@ MCP_STDIO_GUARD_VERSION=mcp-stdio-guard@1.0.0 npm run evaluate
 
 `npm run evaluate:summary` reads `evaluation/results/raw-results.json` and
 prints an aggregate summary. It fails if no run output exists.
+
+`npm run paper:baseline` promotes the current generated evaluation output into
+`artifact/results/v1.0.0-paper-baseline/` as the official reproducible snapshot.
+`npm run paper:tables` regenerates LaTeX tables from that snapshot.
 
 `npm run paper:check` performs lightweight repository checks for the paper
 skeleton and confirms generated PDFs are not committed.

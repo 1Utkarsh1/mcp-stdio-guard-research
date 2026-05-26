@@ -18,7 +18,11 @@ commit.
 npm ci
 MCP_STDIO_GUARD_VERSION=mcp-stdio-guard@1.0.0 npm run evaluate
 npm run evaluate:summary
+npm run paper:baseline
+npm run paper:tables
 npm run paper:check
 ```
 
 Generated outputs are written under `evaluation/results/` and ignored by Git.
+The paper baseline snapshot is preserved under
+`artifact/results/v1.0.0-paper-baseline/`.

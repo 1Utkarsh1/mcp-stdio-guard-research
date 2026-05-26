@@ -9,6 +9,8 @@
     "evaluate": "node evaluation/run-evaluation.js",
     "evaluate:summary": "node evaluation/summarize-results.js",
     "summarize": "node evaluation/summarize-results.js",
+    "paper:baseline": "node evaluation/promote-baseline.js",
+    "paper:tables": "node evaluation/generate-paper-tables.js",
     "paper:check": "node evaluation/scripts/paper-check.mjs"
   },
   "engines": {

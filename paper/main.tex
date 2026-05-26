@@ -2,6 +2,7 @@
 
 \usepackage[margin=1in]{geometry}
 \usepackage{booktabs}
+\usepackage{tabularx}
 \usepackage{hyperref}
 
 \title{mcp-stdio-guard: Protocol Hygiene Evaluation for MCP Stdio Servers}
@@ -12,38 +13,138 @@
 \maketitle
 
 \begin{abstract}
-This paper evaluates MCP stdio server failure modes around stdout protocol
-hygiene, JSON-RPC framing, lifecycle conformance, process behavior, and
-registry-facing result contracts. Experimental results in this paper must be
-generated from the evaluation scripts in this artifact repository and tied to a
-pinned mcp-stdio-guard release or commit.
+Model Context Protocol (MCP) stdio servers use stdout as a JSON-RPC protocol
+channel. This paper studies failure modes caused by stdout pollution,
+JSON-RPC framing errors, incomplete MCP lifecycle behavior, process crashes,
+tool metadata defects, capability drift, and strict protocol edge cases. The
+artifact evaluates a pinned \texttt{mcp-stdio-guard} release against synthetic
+fixtures and records all reported results as reproducible machine-readable
+outputs.
 \end{abstract}
 
 \section{Introduction}
 
-MCP stdio transports reserve stdout for JSON-RPC protocol messages. Diagnostic
-output, startup banners, invalid frames, missing lifecycle responses, and
-process failures can therefore surface as confusing client behavior. This
-artifact separates the research evaluation from the production
-\texttt{mcp-stdio-guard} repository.
+MCP stdio transports reserve stdout for protocol messages and use stderr for
+diagnostics \cite{mcpstdio}. This boundary is easy to violate in practical
+server implementations: startup banners, logging defaults, progress bars,
+debugging \texttt{print} statements, malformed frames, and process crashes can
+all surface as confusing client failures. The goal of this work is to make that
+boundary observable and reproducible for server authors and registry operators.
 
-\section{Methodology}
+This paper evaluates \texttt{mcp-stdio-guard}, a command-line validation tool
+for MCP stdio servers \cite{mcpstdioguard}. The accompanying artifact pins a
+tool release, runs synthetic MCP stdio fixtures through multiple guard profiles,
+and generates the result tables from raw command output.
 
-All experiments should invoke a pinned \texttt{mcp-stdio-guard} version against
-synthetic and, when appropriate, real MCP stdio servers. Generated artifacts
-should record the guard version, fixture command, exit status, and raw JSON
-output.
+\section{Background}
+
+JSON-RPC 2.0 defines request, response, notification, id, and error-object
+semantics \cite{jsonrpc20}. MCP builds on JSON-RPC and defines an initialize
+lifecycle where clients and servers negotiate protocol version and capabilities
+before normal operation \cite{mcplifecycle}. In the stdio transport, stdout is
+therefore not a general-purpose logging stream; it is the protocol channel.
+
+\section{Problem Statement}
+
+The research question for this artifact is:
+
+\begin{quote}
+Can a lightweight external guard detect common MCP stdio protocol hygiene
+failures without modifying the target server?
+\end{quote}
+
+The artifact focuses on observable behavior at the process boundary. It does not
+attempt to prove semantic correctness of arbitrary tool implementations.
+
+\section{Failure Taxonomy}
+
+The evaluation groups injected faults into the following categories:
+
+\begin{itemize}
+  \item stdout transport pollution, including startup and late diagnostic output;
+  \item invalid JSON-RPC framing, including malformed JSON, LSP-style
+        \texttt{Content-Length} framing, and response id mismatch;
+  \item MCP lifecycle failures, including missing initialize responses and
+        crashes after the initialized notification;
+  \item registry-facing metadata failures, including duplicate tool names and
+        invalid tool input schemas;
+  \item repeat-run instability, including capability and tool-list drift;
+  \item strict adversarial behavior, including probes that expect structured
+        JSON-RPC errors or no response for notifications.
+\end{itemize}
+
+\section{System Design}
+
+\texttt{mcp-stdio-guard} runs a target server as a child process, performs the
+MCP initialize lifecycle, optionally sends post-initialize operations, validates
+stdout as protocol-only JSON-RPC output, records process health, and emits a
+machine-readable JSON result. Profiles select different depths of checking:
+smoke, registry, CI, and strict. Registry and strict profiles exercise repeat
+runs; CI and strict can include static stdout-write scanning; strict adds
+adversarial protocol probes.
+
+\section{Evaluation Methodology}
+
+The artifact evaluates \texttt{mcp-stdio-guard@1.0.0}. The command used for the
+official snapshot is:
+
+\begin{verbatim}
+MCP_STDIO_GUARD_VERSION=mcp-stdio-guard@1.0.0 npm run evaluate
+\end{verbatim}
+
+The evaluation script runs synthetic server fixtures under relevant guard
+profiles and writes raw JSON, CSV, and Markdown summaries. The official baseline
+snapshot is preserved under
+\texttt{artifact/results/v1.0.0-paper-baseline/}. Tables in this paper are
+generated from that snapshot.
 
 \section{Results}
 
-Results are intentionally omitted from the source tree until generated by an
-actual evaluation run.
+Table~\ref{tab:detection-matrix} summarizes which injected faults were detected
+and which issue codes appeared in the official baseline. Table~\ref{tab:runtime-overhead}
+summarizes observed wall-clock runtime by profile. These tables are generated
+from actual evaluation output.
 
-\section{Artifact Availability}
+\input{tables/detection-matrix}
 
-The production tool is available at
-\url{https://github.com/1Utkarsh1/mcp-stdio-guard}. This repository contains
-the research artifact and reproducibility notes.
+\input{tables/runtime-overhead}
+
+\section{Discussion}
+
+The synthetic matrix exercises protocol-boundary failures that are small enough
+to reproduce but representative of practical MCP stdio mistakes. The results
+separate expected pass cases, such as stderr-only diagnostics, from protocol
+failures, runtime failures, metadata failures, and repeat-run drift. This
+separation is important for registry display because an install/runtime issue
+should not be presented as the same class of failure as stdout protocol
+corruption or JSON-RPC conformance.
+
+\section{Threats to Validity}
+
+The current artifact uses synthetic fixtures rather than a broad real-world MCP
+server corpus. Runtime measurements include process startup and \texttt{npx}
+invocation overhead, so they are best interpreted as end-to-end evaluation
+costs, not as isolated parser overhead. The fault taxonomy is intentionally
+focused on stdio transport and lifecycle behavior; it does not evaluate semantic
+tool correctness, authorization behavior, or data-source safety. Results are
+also tied to the pinned tool version and should be regenerated when the guard or
+MCP specification changes.
+
+\section{Related Work}
+
+This work sits near protocol conformance testing, language-server transport
+validation, CLI integration testing, and supply-chain registry quality signals.
+Unlike in-process unit tests, this artifact evaluates the server at the stdio
+process boundary. Unlike static-only checks, it observes actual runtime output
+and lifecycle behavior.
+
+\section{Conclusion}
+
+The artifact provides a reproducible baseline for evaluating MCP stdio protocol
+hygiene. It preserves raw command output, generated CSV summaries, and LaTeX
+tables derived from a pinned \texttt{mcp-stdio-guard} release. Future work should
+extend the synthetic matrix with a curated real-server corpus and compare the
+guard's findings against independent maintainer diagnoses.
 
 \bibliographystyle{plain}
 \bibliography{references}
