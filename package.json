@@ -5,8 +5,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "evaluate": "node evaluation/scripts/evaluate.mjs",
-    "summarize": "node evaluation/scripts/summarize.mjs",
+    "test": "node --test",
+    "evaluate": "node evaluation/run-evaluation.js",
+    "evaluate:summary": "node evaluation/summarize-results.js",
+    "summarize": "node evaluation/summarize-results.js",
     "paper:check": "node evaluation/scripts/paper-check.mjs"
   },
   "engines": {

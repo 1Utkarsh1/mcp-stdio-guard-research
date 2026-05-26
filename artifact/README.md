@@ -17,7 +17,7 @@ commit.
 ```bash
 npm ci
 MCP_STDIO_GUARD_VERSION=mcp-stdio-guard@1.0.0 npm run evaluate
-npm run summarize
+npm run evaluate:summary
 npm run paper:check
 ```
 

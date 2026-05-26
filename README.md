@@ -40,14 +40,16 @@ artifact/
 
 ```bash
 npm run evaluate
-npm run summarize
+npm run evaluate:summary
 npm run paper:check
 ```
 
 `npm run evaluate` invokes a pinned `mcp-stdio-guard` package against synthetic
-MCP stdio server fixtures and writes raw JSON results under
-`evaluation/results/`. Those generated result files are intentionally ignored by
-Git.
+MCP stdio server fixtures using smoke, registry, CI, and strict profiles. It
+writes generated outputs to `evaluation/results/raw-results.json`,
+`evaluation/results/detection-matrix.csv`,
+`evaluation/results/runtime-overhead.csv`, and `evaluation/results/summary.md`.
+Those generated result files are intentionally ignored by Git.
 
 Set the evaluated guard version with:
 
@@ -55,8 +57,8 @@ Set the evaluated guard version with:
 MCP_STDIO_GUARD_VERSION=mcp-stdio-guard@1.0.0 npm run evaluate
 ```
 
-`npm run summarize` reads an actual result directory and prints an aggregate
-summary. It fails if no run output exists.
+`npm run evaluate:summary` reads `evaluation/results/raw-results.json` and
+prints an aggregate summary. It fails if no run output exists.
 
 `npm run paper:check` performs lightweight repository checks for the paper
 skeleton and confirms generated PDFs are not committed.
